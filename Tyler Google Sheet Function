@@ -1,0 +1,33 @@
+!pip install -r requirements.txt
+import fooddatacentral as fdc
+
+user = "tyler"
+apikey = {'tyler':"khbVdWdc5wfLYOMDftgM7jfTpihpDdtEuGmzud98"}
+
+
+SHEETs = [
+          ("https://docs.google.com/spreadsheet/ccc?key=1_ZYHCQvP-R-1IvmsnHDA89eiaGD8HWVCDWHr8xsPhII", "Table B"), 
+         ]
+
+import pandas as pd
+import warnings
+
+DFs = []
+#  DFs.append(pd.read_csv(csv,dtype=str))
+
+try:
+    if len(SHEETs):
+        for ID, RANGE_NAME in SHEETs:
+           try:
+               if "docs.google.com" in ID:
+                   sheet = "%s&output=csv" % ID
+               else:
+                   sheet = "https://docs.google.com/spreadsheet/ccc?key=%s&output=csv" % ID
+               DFs.append(pd.read_csv(sheet))
+           except ParserError:
+               warnings.warn("Can't read sheet at https://docs.google.com/spreadsheets/d/%s.\nCheck Sharing settings, so that anyone with link can view?" % ID)
+except NameError: # SHEETS not defined?
+    pass
+
+df = pd.concat(DFs,ignore_index=True,sort=False)
+df
